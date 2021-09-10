@@ -7,10 +7,16 @@
 #ifndef __AVR_UART_H__
 #define	__AVR_UART_H__
 /*********************************************************************************/
-#define AVR_UART_REVISION_DATE		20161117
+#define AVR_UART_REVISION_DATE		20161207
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2016. 12. 07.					- MoveBufPointer() 함수의 인수 'Dir' 삭제.
+	Jung Hyun Gu					- AvrUartGetData() 함수의 인수명 변경 'BufSize' -> 'Length'
+												- AvrUartClearRx() 함수 삭제.
+												- AvrUartClearQueueBuf() 함수 추가.
+												- 주석 추가.
+
 	2016. 11. 17.					- 'AVR_REGISTER' 타입 삭제 -> 'char *' 타입으로 변경.
 	Jung Hyun Gu
 
@@ -34,11 +40,7 @@
 /*********************************************************************************/
 /**Enum**/
 
-typedef enum
-{
-	AVR_UART_FORWARD = 0,
-	AVR_UART_BACKWARD,
-}enum_AvrUartMoveDirection;
+
 /*********************************************************************************/
 /**Struct**/
 
@@ -95,11 +97,11 @@ int AvrUartCheckTx(tag_AvrUartCtrl *Com);
 int AvrUartCheckRx(tag_AvrUartCtrl *Com);
 
 void AvrUartGetChar(tag_AvrUartCtrl *Com, char *Char);
-void AvrUartGetData(tag_AvrUartCtrl *Com, char *Buf, int BufSize);
+void AvrUartGetData(tag_AvrUartCtrl *Com, char *Buf, int Length);
 
 
-void AvrUartClearRx(tag_AvrUartCtrl *Com);
-char AvrUartViewRxBuf(tag_AvrUartCtrl *Com, int Move, enum_AvrUartMoveDirection Direction);
+void AvrUartClearQueueBuf(tag_AvrUartRingBuf *Queue);
+char AvrUartViewRxBuf(tag_AvrUartCtrl *Com, int Move);
 char AvrUartCheckReceiving(tag_AvrUartCtrl *Com);
 
 
