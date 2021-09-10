@@ -66,7 +66,7 @@ void main( void )
         AvrUartPutData(&Uart0, "RESPONE", sizeof("RESPONE"));
         AvrUartStartTx(&Uart0);
       }
-      AvrUartClearRx(&Uart0);
+      AvrUartClearQueueBuf(&Uart0.RxQueue);
     }
   }
 }
