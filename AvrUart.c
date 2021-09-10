@@ -7,6 +7,10 @@
 #include <string.h>
 #include "AvrUart.h"
 /*********************************************************************************/
+#if(AVR_UART_REVISION_DATE != 20161108)
+#error wrong include file. (AvrUart.h)
+#endif
+/*********************************************************************************/
 /** Global variable **/
 
 
@@ -274,3 +278,17 @@ char AvrUartCheckReceiving(tag_AvrUartCtrl *Com)
 	return Com->ReceivingCnt ? true : false;
 }
 /*********************************************************************************/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
