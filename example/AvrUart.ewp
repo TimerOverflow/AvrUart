@@ -1994,6 +1994,9 @@
     <name>$PROJ_DIR$\..\AvrUart.c</name>
   </file>
   <file>
+    <name>$PROJ_DIR$\AvrUartBaud.c</name>
+  </file>
+  <file>
     <name>$PROJ_DIR$\main.c</name>
   </file>
 </project>
