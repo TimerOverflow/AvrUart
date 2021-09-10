@@ -7,7 +7,7 @@
 #include <string.h>
 #include "AvrUart.h"
 /*********************************************************************************/
-#if(AVR_UART_REVISION_DATE != 20161108)
+#if(AVR_UART_REVISION_DATE != 20161117)
 #error wrong include file. (AvrUart.h)
 #endif
 /*********************************************************************************/
@@ -58,7 +58,7 @@ static char* MoveBufPointer(char *Ptr, tag_AvrUartRingBuf *Que, int Move, enum_A
 	return Ptr;
 }
 /*********************************************************************************/
-char AvrUartLinkRegister(tag_AvrUartCtrl *Com, AVR_REGISTER *pUDR, AVR_REGISTER *pUCSRA, AVR_REGISTER *pEnablePort, char EnablePin)
+char AvrUartLinkRegister(tag_AvrUartCtrl *Com, char *pUDR, char *pUCSRA, char *pEnablePort, char EnablePin)
 {
 	Com->pUDR = pUDR;
 	Com->pUCSRA = pUCSRA;

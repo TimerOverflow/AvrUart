@@ -39,7 +39,7 @@ void main( void )
   UCSR0B = (1 << RXCIE0) | (1 << TXCIE0) | (1 << RXEN0) | (1 << TXEN0);
   //uart enable.
   
-  AvrUartLinkRegister(&Uart0, &UDR0, &UCSR0A, &GPIO_485_ENABLE_PORT, GPIO_485_ENABLE);
+  AvrUartLinkRegister(&Uart0, (char *) &UDR0, (char *) &UCSR0A, (char *) &GPIO_485_ENABLE_PORT, GPIO_485_ENABLE);
   AvrUartLinkBuffer(&Uart0, Uart0_TxBuf, sizeof(Uart0_TxBuf), Uart0_RxBuf, sizeof(Uart0_RxBuf));
   AvrUartGeneralInit(&Uart0);
   Uart0.ReceivingDelay = 1000;  //may need adjust..dependent loop tick period
