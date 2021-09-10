@@ -7,10 +7,13 @@
 #ifndef __AVR_UART_H__
 #define	__AVR_UART_H__
 /*********************************************************************************/
-#define AVR_UART_REVISION_DATE		20161207
+#define AVR_UART_REVISION_DATE		20170102
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2017. 01. 02.					- AvrUartFixTxEnableFloating() 함수 추가.
+	Jung Hyun Gu
+
 	2016. 12. 07.					- MoveBufPointer() 함수의 인수 'Dir' 삭제.
 	Jung Hyun Gu					- AvrUartGetData() 함수의 인수명 변경 'BufSize' -> 'Length'
 												- AvrUartClearRx() 함수 삭제.
@@ -61,18 +64,18 @@ typedef struct
 		char InitBuffer				:			1;
 		char InitGeneral			:			1;
 		char InitComplete			:			1;
-		
+
 		char DataSend					:			1;
 	}Bit;
-	
+
 	char *pUDR;
 	char *pUCSRA;
 	char *pEnablePort;
 	char EnablePin;
-	
+
 	long ReceivingDelay;
 	long ReceivingCnt;
-	
+
 	tag_AvrUartRingBuf TxQueue;
 	tag_AvrUartRingBuf RxQueue;
 }tag_AvrUartCtrl;
@@ -104,18 +107,7 @@ void AvrUartClearQueueBuf(tag_AvrUartRingBuf *Queue);
 char AvrUartViewRxBuf(tag_AvrUartCtrl *Com, int Move);
 char AvrUartCheckReceiving(tag_AvrUartCtrl *Com);
 
-
+void AvrUartFixTxEnableFloating(tag_AvrUartCtrl *Com);
 
 /*********************************************************************************/
 #endif //__AVR_UART_H__
-
-
-
-
-
-
-
-
-
-
-
