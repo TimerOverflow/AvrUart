@@ -7,10 +7,13 @@
 #ifndef __AVR_UART_H__
 #define	__AVR_UART_H__
 /*********************************************************************************/
-#define AVR_UART_REVISION_DATE		20161108
+#define AVR_UART_REVISION_DATE		20161117
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2016. 11. 17.					- 'AVR_REGISTER' 타입 삭제 -> 'char *' 타입으로 변경.
+	Jung Hyun Gu
+
 	2016. 11. 08.					- 변수명 변경. AvrUartLinkRegister() 함수의 인수 'pTxPort' -> 'pEnablePort'
 	Jung Hyun Gu					- 변수명 변경. AvrUartLinkRegister() 함수의 인수 'TxPin' -> 'EnablePin'
 												- revision valid check 추가.
@@ -27,8 +30,6 @@
 #define	false				0
 #define	true				1
 #define null				0
-
-#define	AVR_REGISTER		unsigned char volatile __tiny
 
 /*********************************************************************************/
 /**Enum**/
@@ -62,9 +63,9 @@ typedef struct
 		char DataSend					:			1;
 	}Bit;
 	
-	AVR_REGISTER *pUDR;
-	AVR_REGISTER *pUCSRA;
-	AVR_REGISTER *pEnablePort;
+	char *pUDR;
+	char *pUCSRA;
+	char *pEnablePort;
 	char EnablePin;
 	
 	long ReceivingDelay;
@@ -77,7 +78,7 @@ typedef struct
 /*********************************************************************************/
 /**Function**/
 
-char AvrUartLinkRegister(tag_AvrUartCtrl *Com, AVR_REGISTER *pUDR, AVR_REGISTER *pUCSRA, AVR_REGISTER *pEnablePort, char EnablePin);
+char AvrUartLinkRegister(tag_AvrUartCtrl *Com, char *pUDR, char *pUCSRA, char *pEnablePort, char EnablePin);
 char AvrUartLinkBuffer(tag_AvrUartCtrl *Com, char *TxBuf, int TxBufSize, char *RxBuf, int RxBufSize);
 char AvrUartGeneralInit(tag_AvrUartCtrl *Com);
 
