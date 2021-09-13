@@ -7,7 +7,7 @@
 #include <string.h>
 #include "AvrUart.h"
 /*********************************************************************************/
-#if(AVR_UART_REVISION_DATE != 20170322)
+#if(AVR_UART_REVISION_DATE != 20170726)
 #error wrong include file. (AvrUart.h)
 #endif
 /*********************************************************************************/
@@ -219,6 +219,10 @@ void AvrUartTxQueueControl(tag_AvrUartCtrl *Com)
 	{
 		Com->Bit.DataSend = false;
 		*Com->pEnablePort &= ~(1 << Com->EnablePin);
+		if(TxQue->OutPtr != TxQue->InPtr)
+		{
+			AvrUartClearQueueBuf(TxQue);
+		}
 	}
 }
 /*********************************************************************************/
