@@ -1,15 +1,19 @@
 /*********************************************************************************/
 /*
- * Author : Jung Hyun Gu
+ * Author : Jeong Hyun Gu
  * File name : AvrUart.c
 */
 /*********************************************************************************/
 #include <string.h>
 #include "AvrUart.h"
 /*********************************************************************************/
-#if(AVR_UART_REVISION_DATE != 20170224)
+#if(AVR_UART_REVISION_DATE != 20170322)
 #error wrong include file. (AvrUart.h)
 #endif
+/*********************************************************************************/
+#define INC_BUF_POINTER(__PTR__, __RING_BUF__)	(__PTR__ == &(__RING_BUF__)->Buf[(__RING_BUF__)->Size - 1] ? \
+																								__PTR__ = (__RING_BUF__)->Buf : \
+																								__PTR__++)
 /*********************************************************************************/
 /** Global variable **/
 
@@ -30,37 +34,6 @@ static char CheckAllOfInit(tag_AvrUartCtrl *Com)
 	*/
 
 	return (Com->Bit.InitRegister && Com->Bit.InitBuffer && Com->Bit.InitGeneral) ? true : false;
-}
-/*********************************************************************************/
-static char* MoveBufPointer(char *Ptr, tag_AvrUartRingBuf *Que, int Move)
-{
-	int Distance;
-
-	/*
-		1) 인수
-			- Ptr : 이동전 기준 버퍼 주소.
-			- Que : 'tag_AvrUartRingBuf' 타입의 인스턴스 주소.
-			- Move : 이동할 거리.
-
-		2) 반환
-		  - 이동한 버퍼의 주소.
-
-		3) 설명
-			- 인수로 받은 Ptr의 위치에서 지정한 거리만큼 이동한 위치의 버퍼 주소 반환.
-	*/
-
-	Distance = &Que->Buf[Que->Size - 1] - Ptr;
-	if(Move > Distance)
-	{
-		Move--;
-		Ptr = Que->Buf + (Move - Distance);
-	}
-	else
-	{
-		Ptr += Move;
-	}
-
-	return Ptr;
 }
 /*********************************************************************************/
 char AvrUartLinkRegister(tag_AvrUartCtrl *Com, char *pUDR, char *pUCSRA, char *pEnablePort, char EnablePin)
@@ -210,7 +183,7 @@ void AvrUartPutChar(tag_AvrUartCtrl *Com, char Char)
 		TxQue->Ctr++;
 		*TxQue->InPtr = Char;
 
-		TxQue->InPtr = MoveBufPointer(TxQue->InPtr, TxQue, 1);
+		INC_BUF_POINTER(TxQue->InPtr, TxQue);
 	}
 }
 /*********************************************************************************/
@@ -240,7 +213,7 @@ void AvrUartTxQueueControl(tag_AvrUartCtrl *Com)
 		TxQue->Ctr--;
 		*Com->pUDR = *TxQue->OutPtr;
 
-		TxQue->OutPtr = MoveBufPointer(TxQue->OutPtr, TxQue, 1);
+		INC_BUF_POINTER(TxQue->OutPtr, TxQue);
 	}
 	else
 	{
@@ -305,7 +278,7 @@ void AvrUartRxQueueControl(tag_AvrUartCtrl *Com)
 		RxQue->Ctr++;
 		*RxQue->InPtr = *Com->pUDR;
 
-		RxQue->InPtr = MoveBufPointer(RxQue->InPtr, RxQue, 1);
+		INC_BUF_POINTER(RxQue->InPtr, RxQue);
 		Com->ReceivingCnt = Com->ReceivingDelay;
 	}
 }
@@ -369,7 +342,7 @@ void AvrUartGetChar(tag_AvrUartCtrl *Com, char *Char)
 		RxQue->Ctr--;
 		*Char = *RxQue->OutPtr;
 
-		RxQue->OutPtr = MoveBufPointer(RxQue->OutPtr, RxQue, 1);
+		INC_BUF_POINTER(RxQue->OutPtr, RxQue);
 	}
 }
 /*********************************************************************************/
