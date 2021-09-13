@@ -7,7 +7,7 @@
 #include <string.h>
 #include "AvrUart.h"
 /*********************************************************************************/
-#if(AVR_UART_REVISION_DATE != 20191010)
+#if(AVR_UART_REVISION_DATE != 20200826)
 #error wrong include file. (AvrUart.h)
 #endif
 /*********************************************************************************/
@@ -128,6 +128,14 @@ tU8 AvrUartGeneralInit(tag_AvrUartCtrl *Com)
 	return Com->Bit.InitGeneral;
 }
 /*********************************************************************************/
+tU8 AvrUartLinkUserEnPinCtrl(tag_AvrUartCtrl *Com, void (*TurnOnEnPin)(tU8 OnFlag))
+{
+	Com->TurnOnEnPin = TurnOnEnPin;
+	
+	Com->Bit.LinkUserEnPinCtrl = true;
+	return Com->Bit.LinkUserEnPinCtrl;
+}
+/*********************************************************************************/
 void AvrUartPutData(tag_AvrUartCtrl *Com, tU8 *Buf, tU16 Length)
 {
 	tU16 i;
@@ -220,7 +228,14 @@ void AvrUartTxQueueControl(tag_AvrUartCtrl *Com)
 	else if(Com->TxEndDelay == 0)
 	{
 		Com->Bit.DataSend = false;
-		*Com->pEnablePort &= ~(1 << Com->EnablePin);
+		if(Com->Bit.LinkUserEnPinCtrl)
+		{
+			Com->TurnOnEnPin(false);
+		}
+		else
+		{
+			*Com->pEnablePort &= ~(1 << Com->EnablePin);
+		}
 		if(Com->TxQueue.OutPtr != Com->TxQueue.InPtr)
 		{
 			AvrUartClearQueueBuf(&Com->TxQueue);
@@ -250,7 +265,14 @@ void AvrUartStartTx(tag_AvrUartCtrl *Com)
 	while((*Com->pUCSRA & 0x20) == 0);
 	Com->Bit.DataSend = true;
 	Com->TxEndCnt = Com->TxEndDelay;
-	*Com->pEnablePort |= (1 << Com->EnablePin);
+	if(Com->Bit.LinkUserEnPinCtrl)
+	{
+		Com->TurnOnEnPin(true);
+	}
+	else
+	{
+		*Com->pEnablePort |= (1 << Com->EnablePin);
+	}
 	AvrUartTxQueueControl(Com);
 }
 /*********************************************************************************/
@@ -412,7 +434,14 @@ void AvrUartControlTxEnd(tag_AvrUartCtrl *Com)
 	if(Com->TxEndCnt == 0)
 	{
 		Com->Bit.DataSend = false;
-		*Com->pEnablePort &= ~(1 << Com->EnablePin);
+		if(Com->Bit.LinkUserEnPinCtrl)
+		{
+			Com->TurnOnEnPin(false);
+		}
+		else
+		{
+			*Com->pEnablePort &= ~(1 << Com->EnablePin);
+		}
 		if(Com->TxQueue.OutPtr != Com->TxQueue.InPtr)
 		{
 			AvrUartClearQueueBuf(&Com->TxQueue);
