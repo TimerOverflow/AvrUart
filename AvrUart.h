@@ -7,37 +7,40 @@
 #ifndef __AVR_UART_H__
 #define	__AVR_UART_H__
 /*********************************************************************************/
-#define AVR_UART_REVISION_DATE		20170322
+#define AVR_UART_REVISION_DATE		20170726
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2017. 07. 26.					- AvrUartTxQueueControl() 송신완료 후 TxQue::InPtr과 TxQue::OutPtr이 다를 경우
+	Jeong Hyun Gu           버퍼 초기화 실행.
+
 	2017. 03. 22.					- MoveBufPointer() 함수 삭제하고, 매크로 함수로 대체.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 
 	2017. 02. 24.					- AvrUartViewRxBuf() 함수 삭제.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 
 	2017. 01. 02.					- AvrUartFixTxEnableFloating() 함수 추가.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 
 	2016. 12. 07.					- MoveBufPointer() 함수의 인수 'Dir' 삭제.
-	Jung Hyun Gu					- AvrUartGetData() 함수의 인수명 변경 'BufSize' -> 'Length'
+	Jeong Hyun Gu					- AvrUartGetData() 함수의 인수명 변경 'BufSize' -> 'Length'
 												- AvrUartClearRx() 함수 삭제.
 												- AvrUartClearQueueBuf() 함수 추가.
 												- 주석 추가.
 
 	2016. 11. 17.					- 'AVR_REGISTER' 타입 삭제 -> 'char *' 타입으로 변경.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 
 	2016. 11. 08.					- 변수명 변경. AvrUartLinkRegister() 함수의 인수 'pTxPort' -> 'pEnablePort'
-	Jung Hyun Gu					- 변수명 변경. AvrUartLinkRegister() 함수의 인수 'TxPin' -> 'EnablePin'
+	Jeong Hyun Gu					- 변수명 변경. AvrUartLinkRegister() 함수의 인수 'TxPin' -> 'EnablePin'
 												- revision valid check 추가.
 
 	2016. 11. 02.					- 변수명 변경. 'ReceivingDelay_us' -> 'ReceivingDelay'
-	Jung Hyun Gu
+	Jeong Hyun Gu
 
 	2016. 10. 28.					- 초기버전.
-	Jung Hyun Gu
+	Jeong Hyun Gu
 */
 /*********************************************************************************/
 /**Define**/
