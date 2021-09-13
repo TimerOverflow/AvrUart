@@ -7,10 +7,13 @@
 #ifndef __AVR_UART_H__
 #define	__AVR_UART_H__
 /*********************************************************************************/
-#define AVR_UART_REVISION_DATE		20170102
+#define AVR_UART_REVISION_DATE		20170224
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2017. 02. 24.					- AvrUartViewRxBuf() 함수 삭제.
+	Jung Hyun Gu
+
 	2017. 01. 02.					- AvrUartFixTxEnableFloating() 함수 추가.
 	Jung Hyun Gu
 
@@ -104,7 +107,6 @@ void AvrUartGetData(tag_AvrUartCtrl *Com, char *Buf, int Length);
 
 
 void AvrUartClearQueueBuf(tag_AvrUartRingBuf *Queue);
-char AvrUartViewRxBuf(tag_AvrUartCtrl *Com, int Move);
 char AvrUartCheckReceiving(tag_AvrUartCtrl *Com);
 
 void AvrUartFixTxEnableFloating(tag_AvrUartCtrl *Com);

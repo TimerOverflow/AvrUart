@@ -5,9 +5,9 @@
 */
 /*********************************************************************************/
 #include <string.h>
-#include "include/AvrUart.h"
+#include "AvrUart.h"
 /*********************************************************************************/
-#if(AVR_UART_REVISION_DATE != 20170102)
+#if(AVR_UART_REVISION_DATE != 20170224)
 #error wrong include file. (AvrUart.h)
 #endif
 /*********************************************************************************/
@@ -417,34 +417,6 @@ void AvrUartClearQueueBuf(tag_AvrUartRingBuf *Queue)
 
 	Queue->OutPtr = Queue->InPtr = Queue->Buf;
 	Queue->Ctr = 0;
-}
-/*********************************************************************************/
-char AvrUartViewRxBuf(tag_AvrUartCtrl *Com, int Move)
-{
-	tag_AvrUartRingBuf *RxQue = &Com->RxQueue;
-	char *TagetBuf = RxQue->OutPtr;
-
-	/*
-		1) 인수
-			- Com : tag_AvrUartCtrl 인스턴스의 주소.
-			- Move : 수신버퍼 OutPtr로 부터 이동할 거리.
-
-		2) 반환
-		  - 지정한 수신 버퍼의 데이터 반환.
-
-		3) 설명
-			- 수신 버퍼 OutPtr로부터 지정한 길이만큼 이동한 수신 버퍼의 값을 반환.
-			- 본 함수를 실행했을 때 수신완료 길이는 감소하지 않음.
-	*/
-
-	if(Com->Bit.InitComplete == false)
-	{
-		return null;
-	}
-
-	TagetBuf = MoveBufPointer(TagetBuf, RxQue, Move);
-
-	return *TagetBuf;
 }
 /*********************************************************************************/
 char AvrUartCheckReceiving(tag_AvrUartCtrl *Com)
