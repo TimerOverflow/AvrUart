@@ -61,10 +61,10 @@
 /*********************************************************************************/
 /**Define**/
 
-#define	__CRC16_TARGET_UNKNOWN__	0
-#define __CRC16_TARGET_IAR_AVR__	1
-#define __CRC16_TARGET_MICROCHIP_STUDIO__		2
-#define __CRC16_TARGET_COMPILER__		__CRC16_TARGET_IAR_AVR__
+#define  __CRC16_TARGET_UNKNOWN__               0
+#define __CRC16_TARGET_IAR_AVR__                1
+#define __CRC16_TARGET_MICROCHIP_STUDIO__       2
+#define __CRC16_TARGET_COMPILER__               __CRC16_TARGET_IAR_AVR__
 
 #define false       0
 #define true        1
