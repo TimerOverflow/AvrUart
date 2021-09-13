@@ -7,10 +7,20 @@
 #ifndef __AVR_UART_H__
 #define	__AVR_UART_H__
 /*********************************************************************************/
-#define AVR_UART_REVISION_DATE		20170726
+#include "SysTypedef.h"
+/*********************************************************************************/
+#define AVR_UART_REVISION_DATE		20191010
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+	2019. 10. 10.					- AvrUartCheckTx(), AvrUartCheckRx() 매크로 함수로 변경.
+	Jeong Hyun Gu					-	AvrUartControlTxEnd() 추가. TX 종료 후 RX로 전환되기까지 
+													지연 시간 추가.
+												- AvrUartControlTxEnd() 함수가 AvrUartFixTxEnableFloating()를
+													대체할 수 있기 때문에 삭제, 하위 호환을 위해 AvrUartFixTxEnableFloating()를
+													호출하면 AvrUartControlTxEnd()가 호출 되도록 매크로 함수 추가.
+												- crc16(20191007) 버전 대응 위해 SysTypedef.h 적용.
+
 	2017. 07. 26.					- AvrUartTxQueueControl() 송신완료 후 TxQue::InPtr과 TxQue::OutPtr이 다를 경우
 	Jeong Hyun Gu           버퍼 초기화 실행.
 
@@ -58,64 +68,67 @@
 
 typedef struct
 {
-	char *Buf;
-	char *InPtr;
-	char *OutPtr;
-	int Ctr;
-	int Size;
+	tU8 *Buf;
+	tU8 *InPtr;
+	tU8 *OutPtr;
+	tU16 Ctr;
+	tU16 Size;
 }tag_AvrUartRingBuf;
 
 typedef struct
 {
 	struct
 	{
-		char InitRegister			:			1;
-		char InitBuffer				:			1;
-		char InitGeneral			:			1;
-		char InitComplete			:			1;
+		tU8 InitRegister			:			1;
+		tU8 InitBuffer				:			1;
+		tU8 InitGeneral				:			1;
+		tU8 InitComplete			:			1;
 
-		char DataSend					:			1;
+		tU8 DataSend					:			1;
 	}Bit;
 
-	char *pUDR;
-	char *pUCSRA;
-	char *pEnablePort;
-	char EnablePin;
+	tU8 *pUDR;
+	tU8 *pUCSRA;
+	tU8 *pEnablePort;
+	tU8 EnablePin;
 
-	long ReceivingDelay;
-	long ReceivingCnt;
+	tU32 ReceivingDelay;
+	tU32 ReceivingCnt;
 
 	tag_AvrUartRingBuf TxQueue;
 	tag_AvrUartRingBuf RxQueue;
+	
+	tU16 TxEndDelay;
+	tU16 TxEndCnt;
 }tag_AvrUartCtrl;
 
 /*********************************************************************************/
 /**Function**/
 
-char AvrUartLinkRegister(tag_AvrUartCtrl *Com, char *pUDR, char *pUCSRA, char *pEnablePort, char EnablePin);
-char AvrUartLinkBuffer(tag_AvrUartCtrl *Com, char *TxBuf, int TxBufSize, char *RxBuf, int RxBufSize);
-char AvrUartGeneralInit(tag_AvrUartCtrl *Com);
+tU8 AvrUartLinkRegister(tag_AvrUartCtrl *Com, tU8 *pUDR, tU8 *pUCSRA, tU8 *pEnablePort, tU8 EnablePin);
+tU8 AvrUartLinkBuffer(tag_AvrUartCtrl *Com, tU8 *TxBuf, tU16 TxBufSize, tU8 *RxBuf, tU16 RxBufSize);
+tU8 AvrUartGeneralInit(tag_AvrUartCtrl *Com);
+#define AvrUartSetTxEndDelay(Com, Delay_us, MainLoopTick_us)							((Com)->TxEndDelay = Delay_us / MainLoopTick_us)
 
-
-void AvrUartPutData(tag_AvrUartCtrl *Com, char *Buf, int Length);
-void AvrUartPutChar(tag_AvrUartCtrl *Com, char Char);
+void AvrUartPutData(tag_AvrUartCtrl *Com, tU8 *Buf, tU16 Length);
+void AvrUartPutChar(tag_AvrUartCtrl *Com, tU8 Char);
 
 
 void AvrUartTxQueueControl(tag_AvrUartCtrl *Com);
 void AvrUartRxQueueControl(tag_AvrUartCtrl *Com);
 
 void AvrUartStartTx(tag_AvrUartCtrl *Com);
-int AvrUartCheckTx(tag_AvrUartCtrl *Com);
-int AvrUartCheckRx(tag_AvrUartCtrl *Com);
+#define AvrUartCheckTx(Com)						((Com)->TxQueue.Ctr)
+#define AvrUartCheckRx(Com)						((Com)->RxQueue.Ctr)
 
-void AvrUartGetChar(tag_AvrUartCtrl *Com, char *Char);
-void AvrUartGetData(tag_AvrUartCtrl *Com, char *Buf, int Length);
-
+void AvrUartGetChar(tag_AvrUartCtrl *Com, tU8 *Char);
+void AvrUartGetData(tag_AvrUartCtrl *Com, tU8 *Buf, tU16 Length);
 
 void AvrUartClearQueueBuf(tag_AvrUartRingBuf *Queue);
-char AvrUartCheckReceiving(tag_AvrUartCtrl *Com);
+tU8 AvrUartCheckReceiving(tag_AvrUartCtrl *Com);
+void AvrUartControlTxEnd(tag_AvrUartCtrl *Com);
 
-void AvrUartFixTxEnableFloating(tag_AvrUartCtrl *Com);
+#define AvrUartFixTxEnableFloating(Com)					AvrUartControlTxEnd(Com)
 
 /*********************************************************************************/
 #endif //__AVR_UART_H__
