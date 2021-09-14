@@ -7,7 +7,7 @@
 
 #define __CPU_CLK__       14745600L
 
-#define GPIO_485_ENABLE_PORT					PORTD
+#define GPIO_485_ENABLE_PORT          PORTD
 #define GPIO_485_ENABLE_PIN           PIND
 #define GPIO_485_ENABLE               5
 
@@ -20,13 +20,13 @@ tU8 Uart0_RxBuf[256];
 #pragma vector = USART0_RXC_vect
 __interrupt void USART0_RXC_ISR(void)
 {
-	AvrUartRxQueueControl(&Uart0);
+  AvrUartRxQueueControl(&Uart0);
 }
 
 #pragma vector = USART0_TXC_vect
 __interrupt void USART0_TXC_ISR(void)
 {
-	AvrUartTxQueueControl(&Uart0);
+  AvrUartTxQueueControl(&Uart0);
 }
 
 void main( void )
