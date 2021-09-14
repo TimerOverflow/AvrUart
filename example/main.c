@@ -14,8 +14,8 @@
 tag_AvrUartCtrl Uart0;
 tag_UartBaudControl Uart0Baud;
 
-char Uart0_TxBuf[256];
-char Uart0_RxBuf[256];
+tU8 Uart0_TxBuf[256];
+tU8 Uart0_RxBuf[256];
 
 #pragma vector = USART0_RXC_vect
 __interrupt void USART0_RXC_ISR(void)
@@ -39,7 +39,7 @@ void main( void )
   UCSR0B = (1 << RXCIE0) | (1 << TXCIE0) | (1 << RXEN0) | (1 << TXEN0);
   //uart enable.
   
-  AvrUartLinkRegister(&Uart0, (char *) &UDR0, (char *) &UCSR0A, (char *) &GPIO_485_ENABLE_PORT, GPIO_485_ENABLE);
+  AvrUartLinkRegister(&Uart0, (tU8 *) &UDR0, (tU8 *) &UCSR0A, (tU8 *) &GPIO_485_ENABLE_PORT, GPIO_485_ENABLE);
   AvrUartLinkBuffer(&Uart0, Uart0_TxBuf, sizeof(Uart0_TxBuf), Uart0_RxBuf, sizeof(Uart0_RxBuf));
   AvrUartGeneralInit(&Uart0);
   Uart0.ReceivingDelay = 1000;  //may need adjust..dependent loop tick period
@@ -60,7 +60,7 @@ void main( void )
       //receive more than one byte and wait until receive end.
       
       memset(str, 0, sizeof(str));
-      AvrUartGetData(&Uart0, str, AvrUartCheckRx(&Uart0));
+      AvrUartGetData(&Uart0, (tU8 *) str, AvrUartCheckRx(&Uart0));
       if(strcmp(str, "CALL") == 0)
       {
         AvrUartPutData(&Uart0, "RESPONE", sizeof("RESPONE"));
