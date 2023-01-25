@@ -36,7 +36,7 @@ static tU8 CheckAllOfInit(tag_AvrUartCtrl *Com)
   return (Com->Bit.InitRegister && Com->Bit.InitBuffer && Com->Bit.InitGeneral) ? true : false;
 }
 /*********************************************************************************/
-#if(__CRC16_TARGET_COMPILER__ == __CRC16_TARGET_IAR_AVR__)
+#if(__AVRUART_TARGET_COMPILER__ == __AVRUART_TARGET_IAR_AVR__)
 __monitor static void SetEnablePin(tag_AvrUartCtrl *Com)
 #else
 static void SetEnablePin(tag_AvrUartCtrl *Com)
@@ -45,7 +45,7 @@ static void SetEnablePin(tag_AvrUartCtrl *Com)
   *Com->pEnablePort |= (1 << Com->EnablePin);
 }
 /*********************************************************************************/
-#if(__CRC16_TARGET_COMPILER__ == __CRC16_TARGET_IAR_AVR__)
+#if(__AVRUART_TARGET_COMPILER__ == __AVRUART_TARGET_IAR_AVR__)
 __monitor static void ClrEnablePin(tag_AvrUartCtrl *Com)
 #else
 static void ClrEnablePin(tag_AvrUartCtrl *Com)
@@ -148,6 +148,19 @@ tU8 AvrUartGeneralInit(tag_AvrUartCtrl *Com)
 /*********************************************************************************/
 tU8 AvrUartLinkUserEnPinCtrl(tag_AvrUartCtrl *Com, void (*TurnOnEnPin)(tU8 OnFlag))
 {
+  /*
+    1) 인수
+      - Com : tag_AvrUartCtrl 인스턴스의 주소.
+      - TurnOnEnPin : 사용자 정의 485 driver enable pin 제어 함수.
+
+    2) 반환
+      - 0 : 초기화 실패.
+      - 1 : 초기화 성공.
+
+    3) 설명
+      - 485 driver enable pin 별도 제어가 필요한 경우 해당 사용자 함수를 bind한다.
+  */
+
   Com->TurnOnEnPin = TurnOnEnPin;
 
   Com->Bit.LinkUserEnPinCtrl = true;
