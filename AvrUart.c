@@ -7,7 +7,7 @@
 #include <string.h>
 #include "AvrUart.h"
 /*********************************************************************************/
-#if(AVR_UART_REVISION_DATE != 20210521)
+#if(AVR_UART_REVISION_DATE != 20230125)
 #error wrong include file. (AvrUart.h)
 #endif
 /*********************************************************************************/
