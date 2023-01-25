@@ -19,20 +19,19 @@
 
 
 /*********************************************************************************/
+/*
+  @brief
+    - 'tag_AvrUartCtrl' 인스턴스의 필수 항목 초기화 여부 확인.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+
+  @retval
+    - 0  : 초기화 실패.
+    - 1  :  초기화 성공.
+*/
 static tU8 CheckAllOfInit(tag_AvrUartCtrl *Com)
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-
-    2) 반환
-      - 0  : 초기화 실패.
-      - 1  :  초기화 성공.
-
-    3) 설명
-      - 'tag_AvrUartCtrl' 인스턴스의 필수 항목 초기화 여부 확인.
-  */
-
   return (Com->Bit.InitRegister && Com->Bit.InitBuffer && Com->Bit.InitGeneral) ? true : false;
 }
 /*********************************************************************************/
@@ -54,24 +53,23 @@ static void ClrEnablePin(tag_AvrUartCtrl *Com)
   *Com->pEnablePort &= ~(1 << Com->EnablePin);
 }
 /*********************************************************************************/
+/*
+  @brief
+    - AVR의 UART 관련 기능 레지스터와 물리핀 제어를 위한 GPIO 연결.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+    - pUDR : UDRn 레지스터의 주소.
+    - pUCSRA : UCSRnA 레지스터의 주소.
+    - pEnablePort : PORTn 레지스터의 주소. (Tx enable)
+    - EnablePin : pin 번호. (Tx enable)
+
+  @retval
+    - 0  : 초기화 실패
+    - 1  : 초기화 성공
+*/
 tU8 AvrUartLinkRegister(tag_AvrUartCtrl *Com, tU8 *pUDR, tU8 *pUCSRA, tU8 *pEnablePort, tU8 EnablePin)
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-      - pUDR : UDRn 레지스터의 주소.
-      - pUCSRA : UCSRnA 레지스터의 주소.
-      - pEnablePort : PORTn 레지스터의 주소. (Tx enable)
-      - EnablePin : pin 번호. (Tx enable)
-
-    2) 반환
-      - 0  : 초기화 실패
-      - 1  :  초기화 성공
-
-    3) 설명
-      - AVR의 UART 관련 기능 레지스터와 물리핀 제어를 위한 GPIO 연결.
-  */
-
   Com->pUDR = pUDR;
   Com->pUCSRA = pUCSRA;
   Com->pEnablePort = pEnablePort;
@@ -83,24 +81,23 @@ tU8 AvrUartLinkRegister(tag_AvrUartCtrl *Com, tU8 *pUDR, tU8 *pUCSRA, tU8 *pEnab
   return Com->Bit.InitRegister;
 }
 /*********************************************************************************/
+/*
+  @brief
+    - tag_AvrUartCtrl 타입 구조체에 송수신 버퍼 연결.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+    - TxBuf : 송신 버퍼의 주소
+    - TxBufSize : 송신 버퍼의 크기 (Byte)
+    - RxBuf : 수신 버퍼의 주소
+    - RxBufSize : 수신 버퍼의 크기 (Byte)
+
+  @retval
+    - 0  : 초기화 실패
+    - 1  :  초기화 성공
+*/
 tU8 AvrUartLinkBuffer(tag_AvrUartCtrl *Com, tU8 *TxBuf, tU16 TxBufSize, tU8 *RxBuf, tU16 RxBufSize)
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-      - TxBuf : 송신 버퍼의 주소
-      - TxBufSize : 송신 버퍼의 크기 (Byte)
-      - RxBuf : 수신 버퍼의 주소
-      - RxBufSize : 수신 버퍼의 크기 (Byte)
-
-    2) 반환
-      - 0  : 초기화 실패
-      - 1  :  초기화 성공
-
-    3) 설명
-      - tag_AvrUartCtrl 타입 구조체에 송수신 버퍼 연결.
-  */
-
   Com->TxQueue.Buf = TxBuf;
   Com->TxQueue.Size = TxBufSize;
 
@@ -113,20 +110,19 @@ tU8 AvrUartLinkBuffer(tag_AvrUartCtrl *Com, tU8 *TxBuf, tU16 TxBufSize, tU8 *RxB
   return Com->Bit.InitBuffer;
 }
 /*********************************************************************************/
+/*
+  @brief
+    - UART 관리를 위해 송수신 버퍼 초기화.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+
+  @retval
+    - 0  : 초기화 실패
+    - 1  :  초기화 성공
+*/
 tU8 AvrUartGeneralInit(tag_AvrUartCtrl *Com)
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-
-    2) 반환
-      - 0  : 초기화 실패
-      - 1  :  초기화 성공
-
-    3) 설명
-      - UART 관리를 위해 송수신 버퍼 초기화.
-  */
-
   if(Com->Bit.InitBuffer == true)
   {
     Com->TxQueue.InPtr = Com->TxQueue.OutPtr = Com->TxQueue.Buf;
@@ -146,44 +142,42 @@ tU8 AvrUartGeneralInit(tag_AvrUartCtrl *Com)
   return Com->Bit.InitGeneral;
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 485 driver enable pin 별도 제어가 필요한 경우 해당 사용자 함수를 bind한다.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+    - TurnOnEnPin : 사용자 정의 485 driver enable pin 제어 함수.
+
+  @retval
+    - 0 : 초기화 실패.
+    - 1 : 초기화 성공.
+*/
 tU8 AvrUartLinkUserEnPinCtrl(tag_AvrUartCtrl *Com, void (*TurnOnEnPin)(tU8 OnFlag))
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-      - TurnOnEnPin : 사용자 정의 485 driver enable pin 제어 함수.
-
-    2) 반환
-      - 0 : 초기화 실패.
-      - 1 : 초기화 성공.
-
-    3) 설명
-      - 485 driver enable pin 별도 제어가 필요한 경우 해당 사용자 함수를 bind한다.
-  */
-
   Com->TurnOnEnPin = TurnOnEnPin;
 
   Com->Bit.LinkUserEnPinCtrl = true;
   return Com->Bit.LinkUserEnPinCtrl;
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 설정한 길이만큼 지정한 버퍼의 데이터를 송신 버퍼에 저장.
+    - 본 함수 호출 후 AvrUartStartTx() 함수를 호출해야 송신이 시작됨.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+    - Buf : 송신할 데이터가 저장된 버퍼의 주소.
+    - Length : 길이 (Byte)
+
+  @retval
+    - 없음.
+*/
 void AvrUartPutData(tag_AvrUartCtrl *Com, tU8 *Buf, tU16 Length)
 {
   tU16 i;
-
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-      - Buf : 송신할 데이터가 저장된 버퍼의 주소.
-      - Length : 길이 (Byte)
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - 설정한 길이만큼 지정한 버퍼의 데이터를 송신 버퍼에 저장.
-      - 본 함수 호출 후 AvrUartStartTx() 함수를 호출해야 송신이 시작됨.
-  */
 
   if(Com->Bit.InitComplete == false)
   {
@@ -196,22 +190,21 @@ void AvrUartPutData(tag_AvrUartCtrl *Com, tU8 *Buf, tU16 Length)
   }
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 1Byte 데이터를 송신 버퍼에 저장.
+    - 본 함수 호출 후 AvrUartStartTx() 함수를 호출해야 송신이 시작됨.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+    - Char : 송신할 데이터 (1Byte)
+
+  @retval
+    - 없음.
+*/
 void AvrUartPutChar(tag_AvrUartCtrl *Com, tU8 Char)
 {
   tag_AvrUartRingBuf *TxQue = &Com->TxQueue;
-
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-      - Char : 송신할 데이터 (1Byte)
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - 1Byte 데이터를 송신 버퍼에 저장.
-      - 본 함수 호출 후 AvrUartStartTx() 함수를 호출해야 송신이 시작됨.
-  */
 
   if(Com->Bit.InitComplete == false)
   {
@@ -227,21 +220,20 @@ void AvrUartPutChar(tag_AvrUartCtrl *Com, tU8 Char)
   }
 }
 /*********************************************************************************/
+/*
+  @brief
+    - UART 채널의 송신 관리.
+    - 본 함수는 TXC 인터럽트에서 호출.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+
+  @retval
+    - 없음.
+*/
 void AvrUartTxQueueControl(tag_AvrUartCtrl *Com)
 {
   tag_AvrUartRingBuf *TxQue = &Com->TxQueue;
-
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - UART 채널의 송신 관리.
-      - 본 함수는 TXC 인터럽트에서 호출.
-  */
 
   if(Com->Bit.InitComplete == false)
   {
@@ -274,20 +266,19 @@ void AvrUartTxQueueControl(tag_AvrUartCtrl *Com)
   }
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 본 함수를 호출할 경우 송신 버퍼에 저장된 데이터 송신을 시작함.
+    - AvrUartPutData(), AvrUartPutChar() 함수를 호출하여 송신 버퍼에 데이터 저장.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+
+  @retval
+    - 없음.
+*/
 void AvrUartStartTx(tag_AvrUartCtrl *Com)
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - 본 함수를 호출할 경우 송신 버퍼에 저장된 데이터 송신을 시작함.
-      - AvrUartPutData(), AvrUartPutChar() 함수를 호출하여 송신 버퍼에 데이터 저장.
-  */
-
   if(Com->Bit.InitComplete == false)
   {
     return;
@@ -307,22 +298,21 @@ void AvrUartStartTx(tag_AvrUartCtrl *Com)
   AvrUartTxQueueControl(Com);
 }
 /*********************************************************************************/
+/*
+  @brief
+    - UART 채널의 수신 관리.
+    - 본 함수는 RXC 인터럽트에서 호출.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+
+  @retval
+    - 없음.
+*/
 void AvrUartRxQueueControl(tag_AvrUartCtrl *Com)
 {
   volatile tU8 Temp;
   tag_AvrUartRingBuf *RxQue = &Com->RxQueue;
-
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - UART 채널의 수신 관리.
-      - 본 함수는 RXC 인터럽트에서 호출.
-  */
 
   if(Com->Bit.InitComplete == false)
   {
@@ -343,22 +333,21 @@ void AvrUartRxQueueControl(tag_AvrUartCtrl *Com)
   }
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 수신 버퍼의 데이터 1Byte를 읽어 지정한 변수에 저장.
+    - 본 함수를 실행하면 수신완료 길이가 1Byte 감소.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+    - Char : 수신 버퍼의 데이터를 저장할 변수의 주소.
+
+  @retval
+    - 없음.
+*/
 void AvrUartGetChar(tag_AvrUartCtrl *Com, tU8 *Char)
 {
   tag_AvrUartRingBuf *RxQue = &Com->RxQueue;
-
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-      - Char : 수신 버퍼의 데이터를 저장할 변수의 주소.
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - 수신 버퍼의 데이터 1Byte를 읽어 지정한 변수에 저장.
-      - 본 함수를 실행하면 수신완료 길이가 1Byte 감소.
-  */
 
   if(Com->Bit.InitComplete == false)
   {
@@ -374,23 +363,22 @@ void AvrUartGetChar(tag_AvrUartCtrl *Com, tU8 *Char)
   }
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 수신 버퍼의 데이터를 지정한 길이 만큼 읽어 지정한 버퍼에 저장.
+    - 본 함수를 실행하면 수신완료 길이가 지정한 길이 만큼 감소.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+    - Buf : 수신 버퍼의 데이터를 저장할 버퍼의 주소.
+    - Length : 읽어올 데이터의 길이 (Byte)
+
+  @retval
+    - 없음.
+*/
 void AvrUartGetData(tag_AvrUartCtrl *Com, tU8 *Buf, tU16 Length)
 {
   tU16 i;
-
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-      - Buf : 수신 버퍼의 데이터를 저장할 버퍼의 주소.
-      - Length : 읽어올 데이터의 길이 (Byte)
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - 수신 버퍼의 데이터를 지정한 길이 만큼 읽어 지정한 버퍼에 저장.
-      - 본 함수를 실행하면 수신완료 길이가 지정한 길이 만큼 감소.
-  */
 
   if(Com->Bit.InitComplete == false)
   {
@@ -403,37 +391,35 @@ void AvrUartGetData(tag_AvrUartCtrl *Com, tU8 *Buf, tU16 Length)
   }
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 지정한 RingBuf 초기화.
+
+  @param
+    - Queue : tag_AvrUartRingBuf 인스턴스의 주소.
+
+  @retval
+    - 없음.
+*/
 void AvrUartClearQueueBuf(tag_AvrUartRingBuf *Queue)
 {
-  /*
-    1) 인수
-      - Queue : tag_AvrUartRingBuf 인스턴스의 주소.
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - 지정한 RingBuf 초기화.
-  */
-
   Queue->OutPtr = Queue->InPtr = Queue->Buf;
   Queue->Ctr = 0;
 }
 /*********************************************************************************/
+/*
+  @brief
+    - 해당 채널이 수신 중인지 확인하여 반환.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+
+  @retval
+    - 0 : 수신 대기
+    - 1 : 수신 중
+*/
 tU8 AvrUartCheckReceiving(tag_AvrUartCtrl *Com)
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-
-    2) 반환
-      - 0 : 수신 대기
-      - 1 : 수신 중
-
-    3) 설명
-      - 해당 채널이 수신 중인지 확인하여 반환.
-  */
-
   if(Com->Bit.InitComplete == false)
   {
     return false;
@@ -443,20 +429,19 @@ tU8 AvrUartCheckReceiving(tag_AvrUartCtrl *Com)
   return Com->ReceivingCnt ? true : false;
 }
 /*********************************************************************************/
+/*
+  @brief
+    - Main Loop에서 일정한 주기로 본 함수 호출.
+    - 송신 종료를 확인하며 마지막 송신으로부터 일정 지연시간 후 수신으로 전환.
+
+  @param
+    - Com : tag_AvrUartCtrl 인스턴스의 주소.
+
+  @retval
+    - 없음.
+*/
 void AvrUartControlTxEnd(tag_AvrUartCtrl *Com)
 {
-  /*
-    1) 인수
-      - Com : tag_AvrUartCtrl 인스턴스의 주소.
-
-    2) 반환
-      - 없음.
-
-    3) 설명
-      - Main Loop에서 일정한 주기로 본 함수 호출.
-      - 송신 종료를 확인하며 마지막 송신으로부터 일정 지연시간 후 수신으로 전환.
-  */
-
   if(Com->Bit.InitComplete == false)
   {
     return;
