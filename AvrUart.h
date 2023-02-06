@@ -9,10 +9,13 @@
 /*********************************************************************************/
 #include "SysTypedef.h"
 /*********************************************************************************/
-#define AVR_UART_REVISION_DATE    20210521
+#define AVR_UART_REVISION_DATE    20230125
 /*********************************************************************************/
 /** REVISION HISTORY **/
 /*
+  2023. 01. 25.          - 주석 추가.
+  Jeong Hyun Gu
+
   2021. 05. 21.          - 485 ENABLE핀 제어에 CRITICAL SECTION 적용.
   Jeong Hyun Gu
 
@@ -61,10 +64,10 @@
 /*********************************************************************************/
 /**Define**/
 
-#define  __CRC16_TARGET_UNKNOWN__               0
-#define __CRC16_TARGET_IAR_AVR__                1
-#define __CRC16_TARGET_MICROCHIP_STUDIO__       2
-#define __CRC16_TARGET_COMPILER__               __CRC16_TARGET_IAR_AVR__
+#define __AVRUART_TARGET_UNKNOWN__                0
+#define __AVRUART_TARGET_IAR_AVR__                1
+#define __AVRUART_TARGET_MICROCHIP_STUDIO__       2
+#define __AVRUART_TARGET_COMPILER__               __AVRUART_TARGET_IAR_AVR__
 
 #define false       0
 #define true        1
